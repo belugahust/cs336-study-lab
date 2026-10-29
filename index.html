@@ -1,0 +1,884 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CS336 学习工作台</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f5f1;color:#182522;font:16px/1.7 system-ui,'Microsoft YaHei',sans-serif}main{max-width:1040px;margin:auto;padding:48px 24px}header{padding-bottom:30px;border-bottom:1px solid #ccd7cf}h1{font-size:38px;line-height:1.25;margin:12px 0}h2{font-size:22px;margin:8px 0}.eyebrow{font-size:12px;letter-spacing:.12em;color:#43645a}.stats{display:flex;flex-wrap:wrap;gap:14px;margin:24px 0}.stats div{background:#174d3e;color:#fff;border-radius:12px;padding:16px 26px}.stats b{font-size:30px;display:block}.nav{display:flex;flex-wrap:wrap;gap:18px}a{color:#14634d}article{background:white;border:1px solid #dce3dd;border-radius:12px;padding:24px;margin:18px 0}article code{display:block;background:#f1f4f0;padding:12px;overflow:auto;font-size:12px}.status{color:#597066;font-size:14px}summary{cursor:pointer;color:#14634d;padding:8px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f7f8f5;padding:18px;font:14px/1.7 ui-monospace,monospace}input{width:100%;padding:12px 16px;border:1px solid #b8c9be;border-radius:8px;margin:24px 0 8px;font:inherit}footer{font-size:13px;color:#597066;margin-top:30px}button{padding:9px 14px;cursor:pointer}@media(max-width:600px){main{padding:25px 16px}h1{font-size:29px}article{padding:18px}}</style></head>
+<body><main><header><div class="eyebrow">STANFORD CS336 · SPRING 2025 · PERSONAL LEARNING LAB</div><h1>一讲一记录，一步一步构建语言模型。</h1><p>官方作业、中文参考资料与自己的实现放在一起。先理解，再动手，最后记录。</p>
+<nav class="nav"><a href="README.md">开始使用</a><a href="resources/INDEX.md">全部资料</a><a href="assignments/01-basics/LEARNING_GUIDE.md">作业一分步路线</a><a href="PROGRESS.md">GitHub 进度页</a></nav></header>
+<section class="stats"><div><b>0/19</b>已看完视频</div><div><b>0/19</b>完成本讲练习</div><div><b>0</b>累计分钟</div></section>
+<p>完成练习由你主动标记，不等同于自动通过测试。这里展示的是本地生成时的记录；更新后刷新页面。</p>
+<label for="search">查找课程 / 知识点</label><input id="search" placeholder="例如：分词、PyTorch、对齐、推理"><section id="lessons"><article><div class="eyebrow">LECTURE 01 · A1</div>
+<h2>概览与分词</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>解释文本、Unicode 字符与 UTF-8 字节的区别。</li><li>手算一次相邻符号对统计及 BPE 合并。</li><li>按 PDF 编写 BPE 训练和 tokenizer 的第一版。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_01.json">官方材料：lecture_01.py</a></li><li><a href="assignments/01-basics/README.md">官方作业 A1（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第一章完整版v1.pdf">中文笔记：第一章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter1/">中文参考实现：chapter1</a></li><li><a href="references/shallowu/assignment1/README.md">ShallowU 参考实现与说明：assignment1</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/01/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 01 讲：概览与分词
+
+英文标题：Overview, tokenization · 关联：A1 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 解释文本、Unicode 字符与 UTF-8 字节的区别。
+- [ ] 手算一次相邻符号对统计及 BPE 合并。
+- [ ] 按 PDF 编写 BPE 训练和 tokenizer 的第一版。
+
+## 本讲动手任务
+
+用 banana、bandana 等短文本写出一轮 BPE 合并；再开始 run_train_bpe 接口。不要先下载大训练集。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_01.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_01.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A1（原始框架与 handout）](../../assignments/01-basics/README.md)
+- [中文笔记：第一章完整版v1.pdf](../../references/weiruihhh/笔记/第一章完整版v1.pdf)
+- [中文参考实现：chapter1](../../references/weiruihhh/chapter1/)
+- [ShallowU 参考实现与说明：assignment1](../../references/shallowu/assignment1/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 1 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 1 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 02 · A1</div>
+<h2>PyTorch 与资源核算</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>追踪 batch、sequence、hidden、heads 各个张量维度。</li><li>理解 Parameter、autograd 和矩阵乘法。</li><li>估算小模型参数、梯度及优化器状态占用。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_02.json">官方材料：lecture_02.py</a></li><li><a href="assignments/01-basics/README.md">官方作业 A1（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第一章完整版v1.pdf">中文笔记：第一章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter1/">中文参考实现：chapter1</a></li><li><a href="references/shallowu/assignment1/README.md">ShallowU 参考实现与说明：assignment1</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/02/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 02 讲：PyTorch 与资源核算
+
+英文标题：PyTorch, resource accounting · 关联：A1 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 追踪 batch、sequence、hidden、heads 各个张量维度。
+- [ ] 理解 Parameter、autograd 和矩阵乘法。
+- [ ] 估算小模型参数、梯度及优化器状态占用。
+
+## 本讲动手任务
+
+用随机小张量验证矩阵乘法和 reshape；实现 Linear、Embedding，接入官方测试。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_02.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_02.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A1（原始框架与 handout）](../../assignments/01-basics/README.md)
+- [中文笔记：第一章完整版v1.pdf](../../references/weiruihhh/笔记/第一章完整版v1.pdf)
+- [中文参考实现：chapter1](../../references/weiruihhh/chapter1/)
+- [ShallowU 参考实现与说明：assignment1](../../references/shallowu/assignment1/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 2 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 2 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 03 · A1</div>
+<h2>架构与超参数</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解 RMSNorm、RoPE、SwiGLU 和因果注意力。</li><li>把单个组件拼成 Transformer block 与 LM。</li><li>按 PDF 补优化器、损失、训练循环和采样。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/e9cb2488fdb53ea37f0e38924ec3a1701925cef3/nonexecutable/2025%20Lecture%203%20-%20architecture.pdf">官方材料：lecture 3.pdf</a></li><li><a href="assignments/01-basics/README.md">官方作业 A1（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第一章完整版v1.pdf">中文笔记：第一章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter1/">中文参考实现：chapter1</a></li><li><a href="references/shallowu/assignment1/README.md">ShallowU 参考实现与说明：assignment1</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/03/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 03 讲：架构与超参数
+
+英文标题：Architectures, hyperparameters · 关联：A1 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解 RMSNorm、RoPE、SwiGLU 和因果注意力。
+- [ ] 把单个组件拼成 Transformer block 与 LM。
+- [ ] 按 PDF 补优化器、损失、训练循环和采样。
+
+## 本讲动手任务
+
+先通过各层测试，再用很小的 batch 验证 loss 能下降；正式训练和消融作为 A1 后续里程碑。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 3.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/e9cb2488fdb53ea37f0e38924ec3a1701925cef3/nonexecutable/2025%20Lecture%203%20-%20architecture.pdf)
+- [官方作业 A1（原始框架与 handout）](../../assignments/01-basics/README.md)
+- [中文笔记：第一章完整版v1.pdf](../../references/weiruihhh/笔记/第一章完整版v1.pdf)
+- [中文参考实现：chapter1](../../references/weiruihhh/chapter1/)
+- [ShallowU 参考实现与说明：assignment1](../../references/shallowu/assignment1/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 3 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 3 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 04 · 拓展</div>
+<h2>混合专家模型</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>区分总参数量与每 token 激活参数量。</li><li>理解路由和负载均衡的作用。</li><li>辨认 MoE 与普通 dense Transformer 的区别。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/98455ec198c9a88ec1ab2b1c4058662431b54ce3/nonexecutable/2025%20Lecture%204%20-%20MoEs.pdf">官方材料：lecture 4.pdf</a></li><li><a href="assignments/01-basics/README.md">官方作业 A1（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第一章完整版v1.pdf">中文笔记：第一章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter1/">中文参考实现：chapter1</a></li><li><a href="references/shallowu/assignment1/README.md">ShallowU 参考实现与说明：assignment1</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/04/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 04 讲：混合专家模型
+
+英文标题：Mixture of experts · 关联：拓展 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 区分总参数量与每 token 激活参数量。
+- [ ] 理解路由和负载均衡的作用。
+- [ ] 辨认 MoE 与普通 dense Transformer 的区别。
+
+## 本讲动手任务
+
+画一个两专家路由示意并解释为何 A1 不需要实现 MoE；优先继续完成 A1。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 4.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/98455ec198c9a88ec1ab2b1c4058662431b54ce3/nonexecutable/2025%20Lecture%204%20-%20MoEs.pdf)
+- [官方作业 A1（原始框架与 handout）](../../assignments/01-basics/README.md)
+- [中文笔记：第一章完整版v1.pdf](../../references/weiruihhh/笔记/第一章完整版v1.pdf)
+- [中文参考实现：chapter1](../../references/weiruihhh/chapter1/)
+- [ShallowU 参考实现与说明：assignment1](../../references/shallowu/assignment1/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 4 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 4 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 05 · A2</div>
+<h2>GPU 基础</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解 GPU 内存层次与计算单元。</li><li>区分计算瓶颈与访存瓶颈。</li><li>整理自己可用的实验设备。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/main/nonexecutable/2025%20Lecture%205%20-%20GPUs.pdf">官方材料：lecture 5.pdf</a></li><li><a href="assignments/02-systems/README.md">官方作业 A2（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第二章完整版v1.pdf">中文笔记：第二章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter2/">中文参考实现：chapter2</a></li><li><a href="references/shallowu/assignment2/README.md">ShallowU 参考实现与说明：assignment2</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/05/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 05 讲：GPU 基础
+
+英文标题：GPUs · 关联：A2 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解 GPU 内存层次与计算单元。
+- [ ] 区分计算瓶颈与访存瓶颈。
+- [ ] 整理自己可用的实验设备。
+
+## 本讲动手任务
+
+先复盘 A1 的正确性与实验；阅读 A2 handout，记录环境需求。无 GPU 时先做理论分析。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 5.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/main/nonexecutable/2025%20Lecture%205%20-%20GPUs.pdf)
+- [官方作业 A2（原始框架与 handout）](../../assignments/02-systems/README.md)
+- [中文笔记：第二章完整版v1.pdf](../../references/weiruihhh/笔记/第二章完整版v1.pdf)
+- [中文参考实现：chapter2](../../references/weiruihhh/chapter2/)
+- [ShallowU 参考实现与说明：assignment2](../../references/shallowu/assignment2/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 5 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 5 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 06 · A2</div>
+<h2>Kernel 与 Triton</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解 kernel、分块和融合。</li><li>理解 FlashAttention 减少数据搬运的思路。</li><li>学习如何测量而不是猜测性能。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_06.json">官方材料：lecture_06.py</a></li><li><a href="assignments/02-systems/README.md">官方作业 A2（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第二章完整版v1.pdf">中文笔记：第二章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter2/">中文参考实现：chapter2</a></li><li><a href="references/shallowu/assignment2/README.md">ShallowU 参考实现与说明：assignment2</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/06/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 06 讲：Kernel 与 Triton
+
+英文标题：Kernels, Triton · 关联：A2 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解 kernel、分块和融合。
+- [ ] 理解 FlashAttention 减少数据搬运的思路。
+- [ ] 学习如何测量而不是猜测性能。
+
+## 本讲动手任务
+
+按 A2 文档完成一个小规模基准；有兼容 GPU 再做 Triton 部分，不在 Windows CPU 环境硬跑。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_06.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_06.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A2（原始框架与 handout）](../../assignments/02-systems/README.md)
+- [中文笔记：第二章完整版v1.pdf](../../references/weiruihhh/笔记/第二章完整版v1.pdf)
+- [中文参考实现：chapter2](../../references/weiruihhh/chapter2/)
+- [ShallowU 参考实现与说明：assignment2](../../references/shallowu/assignment2/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 6 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 6 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 07 · A2</div>
+<h2>并行训练（一）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解数据并行的梯度同步。</li><li>分析通信和计算开销。</li><li>梳理 DDP 的正确性要求。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/4eff81bee0a853217209e163936b264f03572b66/nonexecutable/2025%20Lecture%207%20-%20Parallelism%20basics.pdf">官方材料：lecture 7.pdf</a></li><li><a href="assignments/02-systems/README.md">官方作业 A2（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第二章完整版v1.pdf">中文笔记：第二章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter2/">中文参考实现：chapter2</a></li><li><a href="references/shallowu/assignment2/README.md">ShallowU 参考实现与说明：assignment2</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/07/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 07 讲：并行训练（一）
+
+英文标题：Parallelism · 关联：A2 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解数据并行的梯度同步。
+- [ ] 分析通信和计算开销。
+- [ ] 梳理 DDP 的正确性要求。
+
+## 本讲动手任务
+
+画出一次数据并行更新的时序；按 A2 的 DDP 部分继续实现。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 7.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/4eff81bee0a853217209e163936b264f03572b66/nonexecutable/2025%20Lecture%207%20-%20Parallelism%20basics.pdf)
+- [官方作业 A2（原始框架与 handout）](../../assignments/02-systems/README.md)
+- [中文笔记：第二章完整版v1.pdf](../../references/weiruihhh/笔记/第二章完整版v1.pdf)
+- [中文参考实现：chapter2](../../references/weiruihhh/chapter2/)
+- [ShallowU 参考实现与说明：assignment2](../../references/shallowu/assignment2/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 7 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 7 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 08 · A2</div>
+<h2>并行训练（二）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解优化器状态与参数分片。</li><li>解释通信与计算重叠。</li><li>对比不同并行方案的内存和吞吐。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_08.json">官方材料：lecture_08.py</a></li><li><a href="assignments/02-systems/README.md">官方作业 A2（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第二章完整版v1.pdf">中文笔记：第二章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter2/">中文参考实现：chapter2</a></li><li><a href="references/shallowu/assignment2/README.md">ShallowU 参考实现与说明：assignment2</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/08/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 08 讲：并行训练（二）
+
+英文标题：Parallelism · 关联：A2 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解优化器状态与参数分片。
+- [ ] 解释通信与计算重叠。
+- [ ] 对比不同并行方案的内存和吞吐。
+
+## 本讲动手任务
+
+记录一个并行方案的权衡；有多 GPU 再运行指定实验，没有设备明确标记未运行。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_08.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_08.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A2（原始框架与 handout）](../../assignments/02-systems/README.md)
+- [中文笔记：第二章完整版v1.pdf](../../references/weiruihhh/笔记/第二章完整版v1.pdf)
+- [中文参考实现：chapter2](../../references/weiruihhh/chapter2/)
+- [ShallowU 参考实现与说明：assignment2](../../references/shallowu/assignment2/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 8 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 8 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 09 · A3</div>
+<h2>缩放规律（一）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>区分参数量、训练 token 与计算预算。</li><li>理解拟合 scaling law 的前提。</li><li>注意外推误差与实验预算。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/fb79eb018fa047bf99c4c785dcbbd62fff361e54/nonexecutable/2025%20Lecture%209%20-%20Scaling%20laws%20basics.pdf">官方材料：lecture 9.pdf</a></li><li><a href="assignments/03-scaling/README.md">官方作业 A3（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第三章.pdf">中文笔记：第三章.pdf</a></li><li><a href="references/weiruihhh/chapter3/">中文参考实现：chapter3</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/09/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 09 讲：缩放规律（一）
+
+英文标题：Scaling laws · 关联：A3 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 区分参数量、训练 token 与计算预算。
+- [ ] 理解拟合 scaling law 的前提。
+- [ ] 注意外推误差与实验预算。
+
+## 本讲动手任务
+
+阅读 A3 handout，复现小型拟合或先画一组示例曲线，示例数据须明确标注。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 9.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/fb79eb018fa047bf99c4c785dcbbd62fff361e54/nonexecutable/2025%20Lecture%209%20-%20Scaling%20laws%20basics.pdf)
+- [官方作业 A3（原始框架与 handout）](../../assignments/03-scaling/README.md)
+- [中文笔记：第三章.pdf](../../references/weiruihhh/笔记/第三章.pdf)
+- [中文参考实现：chapter3](../../references/weiruihhh/chapter3/)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 9 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 9 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 10 · 拓展 / A1</div>
+<h2>推理</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解自回归解码和 KV cache。</li><li>区分预填充与逐 token 解码。</li><li>理解延迟、吞吐与内存之间的权衡。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_10.json">官方材料：lecture_10.py</a></li><li><a href="assignments/01-basics/README.md">官方作业 A1（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第一章完整版v1.pdf">中文笔记：第一章完整版v1.pdf</a></li><li><a href="references/weiruihhh/chapter1/">中文参考实现：chapter1</a></li><li><a href="references/shallowu/assignment1/README.md">ShallowU 参考实现与说明：assignment1</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/10/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 10 讲：推理
+
+英文标题：Inference · 关联：拓展 / A1 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解自回归解码和 KV cache。
+- [ ] 区分预填充与逐 token 解码。
+- [ ] 理解延迟、吞吐与内存之间的权衡。
+
+## 本讲动手任务
+
+解释 temperature 和 top-p 对 A1 生成的影响；把推理优化联系到 Agent 的调用成本。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_10.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_10.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A1（原始框架与 handout）](../../assignments/01-basics/README.md)
+- [中文笔记：第一章完整版v1.pdf](../../references/weiruihhh/笔记/第一章完整版v1.pdf)
+- [中文参考实现：chapter1](../../references/weiruihhh/chapter1/)
+- [ShallowU 参考实现与说明：assignment1](../../references/shallowu/assignment1/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 10 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 10 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 11 · A3</div>
+<h2>缩放规律（二）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解计算最优训练的含义。</li><li>比较模型更大与数据更多两种选择。</li><li>检查拟合结论的适用范围。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/00191bba00d6d64621dc46ccaed9122681413a24/nonexecutable/2025%20Lecture%2011%20-%20Scaling%20details.pdf">官方材料：lecture 11.pdf</a></li><li><a href="assignments/03-scaling/README.md">官方作业 A3（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第三章.pdf">中文笔记：第三章.pdf</a></li><li><a href="references/weiruihhh/chapter3/">中文参考实现：chapter3</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/11/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 11 讲：缩放规律（二）
+
+英文标题：Scaling laws · 关联：A3 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解计算最优训练的含义。
+- [ ] 比较模型更大与数据更多两种选择。
+- [ ] 检查拟合结论的适用范围。
+
+## 本讲动手任务
+
+整理 A3 拟合结果和误差；不要把课程历史服务的可用性当作已保证。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 11.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/00191bba00d6d64621dc46ccaed9122681413a24/nonexecutable/2025%20Lecture%2011%20-%20Scaling%20details.pdf)
+- [官方作业 A3（原始框架与 handout）](../../assignments/03-scaling/README.md)
+- [中文笔记：第三章.pdf](../../references/weiruihhh/笔记/第三章.pdf)
+- [中文参考实现：chapter3](../../references/weiruihhh/chapter3/)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 11 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 11 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 12 · 通用 / Agent</div>
+<h2>评估</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>区分训练 loss、任务得分与用户体验。</li><li>识别污染、泄漏和基准局限。</li><li>为自己的项目定义可复现评价。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_12.json">官方材料：lecture_12.py</a></li><li><a href="assignments/03-scaling/README.md">官方作业 A3（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第三章.pdf">中文笔记：第三章.pdf</a></li><li><a href="references/weiruihhh/chapter3/">中文参考实现：chapter3</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/12/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 12 讲：评估
+
+英文标题：Evaluation · 关联：通用 / Agent · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 区分训练 loss、任务得分与用户体验。
+- [ ] 识别污染、泄漏和基准局限。
+- [ ] 为自己的项目定义可复现评价。
+
+## 本讲动手任务
+
+给 Agent 求职项目写 10 条有期望结果的评测任务；只记录真实测得的指标。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_12.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_12.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A3（原始框架与 handout）](../../assignments/03-scaling/README.md)
+- [中文笔记：第三章.pdf](../../references/weiruihhh/笔记/第三章.pdf)
+- [中文参考实现：chapter3](../../references/weiruihhh/chapter3/)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 12 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 12 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 13 · A4</div>
+<h2>数据（一）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解网页文本提取与数据质量。</li><li>区分规则过滤与模型过滤。</li><li>认识隐私、许可和数据污染问题。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_13.json">官方材料：lecture_13.py</a></li><li><a href="assignments/04-data/README.md">官方作业 A4（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第四章v1草稿.pdf">中文笔记：第四章v1草稿.pdf</a></li><li><a href="references/weiruihhh/chapter4/">中文参考实现：chapter4</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/13/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 13 讲：数据（一）
+
+英文标题：Data · 关联：A4 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解网页文本提取与数据质量。
+- [ ] 区分规则过滤与模型过滤。
+- [ ] 认识隐私、许可和数据污染问题。
+
+## 本讲动手任务
+
+在少量公开样本上验证提取/过滤流程，再按 A4 要求扩展。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_13.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_13.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A4（原始框架与 handout）](../../assignments/04-data/README.md)
+- [中文笔记：第四章v1草稿.pdf](../../references/weiruihhh/笔记/第四章v1草稿.pdf)
+- [中文参考实现：chapter4](../../references/weiruihhh/chapter4/)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 13 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 13 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 14 · A4</div>
+<h2>数据（二）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解精确去重与近似去重。</li><li>了解质量和多样性的平衡。</li><li>为数据处理保留可复现配置。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_14.json">官方材料：lecture_14.py</a></li><li><a href="assignments/04-data/README.md">官方作业 A4（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第四章v1草稿.pdf">中文笔记：第四章v1草稿.pdf</a></li><li><a href="references/weiruihhh/chapter4/">中文参考实现：chapter4</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/14/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 14 讲：数据（二）
+
+英文标题：Data · 关联：A4 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解精确去重与近似去重。
+- [ ] 了解质量和多样性的平衡。
+- [ ] 为数据处理保留可复现配置。
+
+## 本讲动手任务
+
+比较去重前后样本数与例子，记录阈值及数据来源。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_14.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_14.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A4（原始框架与 handout）](../../assignments/04-data/README.md)
+- [中文笔记：第四章v1草稿.pdf](../../references/weiruihhh/笔记/第四章v1草稿.pdf)
+- [中文参考实现：chapter4](../../references/weiruihhh/chapter4/)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 14 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 14 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 15 · A5</div>
+<h2>对齐：SFT / RLHF</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>区分预训练和监督微调。</li><li>理解偏好数据与奖励模型的角色。</li><li>理解对齐收益与局限。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/61eddac004df975466cff0329b615f2d24230069/nonexecutable/2025%20Lecture%2015%20-%20RLHF%20Alignment.pdf">官方材料：lecture 15.pdf</a></li><li><a href="assignments/05-alignment/README.md">官方作业 A5（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第五章笔记初版.pdf">中文笔记：第五章笔记初版.pdf</a></li><li><a href="references/weiruihhh/chapter5/">中文参考实现：chapter5</a></li><li><a href="references/shallowu/assignment5/README.md">ShallowU 参考实现与说明：assignment5</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/15/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 15 讲：对齐：SFT / RLHF
+
+英文标题：Alignment - SFT/RLHF · 关联：A5 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 区分预训练和监督微调。
+- [ ] 理解偏好数据与奖励模型的角色。
+- [ ] 理解对齐收益与局限。
+
+## 本讲动手任务
+
+阅读 A5 handout，梳理 SFT 数据和 loss mask；实际训练前确认模型、显存和依赖。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 15.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/61eddac004df975466cff0329b615f2d24230069/nonexecutable/2025%20Lecture%2015%20-%20RLHF%20Alignment.pdf)
+- [官方作业 A5（原始框架与 handout）](../../assignments/05-alignment/README.md)
+- [中文笔记：第五章笔记初版.pdf](../../references/weiruihhh/笔记/第五章笔记初版.pdf)
+- [中文参考实现：chapter5](../../references/weiruihhh/chapter5/)
+- [ShallowU 参考实现与说明：assignment5](../../references/shallowu/assignment5/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 15 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 15 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 16 · A5</div>
+<h2>对齐：强化学习（一）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解策略、奖励和采样。</li><li>区分监督信号与强化学习反馈。</li><li>认识推理任务里的可验证奖励。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://github.com/stanford-cs336/spring2025-lectures/blob/e94e33f433985e57036b25215dff2a4292e67a4f/nonexecutable/2025%20Lecture%2016%20-%20RLVR.pdf">官方材料：lecture 16.pdf</a></li><li><a href="assignments/05-alignment/README.md">官方作业 A5（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第五章笔记初版.pdf">中文笔记：第五章笔记初版.pdf</a></li><li><a href="references/weiruihhh/chapter5/">中文参考实现：chapter5</a></li><li><a href="references/shallowu/assignment5/README.md">ShallowU 参考实现与说明：assignment5</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/16/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 16 讲：对齐：强化学习（一）
+
+英文标题：Alignment - RL · 关联：A5 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解策略、奖励和采样。
+- [ ] 区分监督信号与强化学习反馈。
+- [ ] 认识推理任务里的可验证奖励。
+
+## 本讲动手任务
+
+手算一个小批次奖励归一化例子，再按 A5 接口实现；不把调 API 当作 RL 训练。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方材料：lecture 16.pdf](https://github.com/stanford-cs336/spring2025-lectures/blob/e94e33f433985e57036b25215dff2a4292e67a4f/nonexecutable/2025%20Lecture%2016%20-%20RLVR.pdf)
+- [官方作业 A5（原始框架与 handout）](../../assignments/05-alignment/README.md)
+- [中文笔记：第五章笔记初版.pdf](../../references/weiruihhh/笔记/第五章笔记初版.pdf)
+- [中文参考实现：chapter5](../../references/weiruihhh/chapter5/)
+- [ShallowU 参考实现与说明：assignment5](../../references/shallowu/assignment5/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 16 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 16 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 17 · A5</div>
+<h2>对齐：强化学习（二）</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>理解 GRPO 及其训练循环。</li><li>观察奖励、KL 和长度等指标。</li><li>分析评测收益与奖励投机。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_17.json">官方材料：lecture_17.py</a></li><li><a href="assignments/05-alignment/README.md">官方作业 A5（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第五章笔记初版.pdf">中文笔记：第五章笔记初版.pdf</a></li><li><a href="references/weiruihhh/chapter5/">中文参考实现：chapter5</a></li><li><a href="references/shallowu/assignment5/README.md">ShallowU 参考实现与说明：assignment5</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/17/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 17 讲：对齐：强化学习（二）
+
+英文标题：Alignment - RL · 关联：A5 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 理解 GRPO 及其训练循环。
+- [ ] 观察奖励、KL 和长度等指标。
+- [ ] 分析评测收益与奖励投机。
+
+## 本讲动手任务
+
+把 A5 实验配置、seed 和指标记入 experiment；安全对齐补充作业作为选做。
+
+## 所需资料（已整合）
+
+- [官方材料：lecture_17.py](https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_17.json)
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A5（原始框架与 handout）](../../assignments/05-alignment/README.md)
+- [中文笔记：第五章笔记初版.pdf](../../references/weiruihhh/笔记/第五章笔记初版.pdf)
+- [中文参考实现：chapter5](../../references/weiruihhh/chapter5/)
+- [ShallowU 参考实现与说明：assignment5](../../references/shallowu/assignment5/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 17 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 17 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 18 · 拓展</div>
+<h2>嘉宾课：Junyang Lin</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>根据实际视频记录主题。</li><li>区分研究结论、经验判断和产品展示。</li><li>选一个对自己研究有价值的问题。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="assignments/05-alignment/README.md">官方作业 A5（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第五章笔记初版.pdf">中文笔记：第五章笔记初版.pdf</a></li><li><a href="references/weiruihhh/chapter5/">中文参考实现：chapter5</a></li><li><a href="references/shallowu/assignment5/README.md">ShallowU 参考实现与说明：assignment5</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/18/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 18 讲：嘉宾课：Junyang Lin
+
+英文标题：Guest Lecture by Junyang Lin · 关联：拓展 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 根据实际视频记录主题。
+- [ ] 区分研究结论、经验判断和产品展示。
+- [ ] 选一个对自己研究有价值的问题。
+
+## 本讲动手任务
+
+写三条收获和一个待验证判断；此处不预先假定嘉宾讲了哪些具体内容。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A5（原始框架与 handout）](../../assignments/05-alignment/README.md)
+- [中文笔记：第五章笔记初版.pdf](../../references/weiruihhh/笔记/第五章笔记初版.pdf)
+- [中文参考实现：chapter5](../../references/weiruihhh/chapter5/)
+- [ShallowU 参考实现与说明：assignment5](../../references/shallowu/assignment5/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 18 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 18 --minutes 60 --summary "本次收获" --watched --push</code></article><article><div class="eyebrow">LECTURE 19 · 拓展</div>
+<h2>嘉宾课：Mike Lewis</h2><p class="status">视频：待学习　练习：待练习　0 分钟</p>
+<ul><li>根据实际视频记录主题。</li><li>总结整门课对模型训练的认识。</li><li>决定哪些内容迁移到 Agent 项目。</li></ul><details><summary>本讲资料与笔记</summary><ul><li><a href="https://stanford-cs336.github.io/spring2025/">官方 2025 课程日程 / 视频入口</a></li><li><a href="assignments/05-alignment/README.md">官方作业 A5（原始框架与 handout）</a></li><li><a href="references/weiruihhh/笔记/第五章笔记初版.pdf">中文笔记：第五章笔记初版.pdf</a></li><li><a href="references/weiruihhh/chapter5/">中文参考实现：chapter5</a></li><li><a href="references/shallowu/assignment5/README.md">ShallowU 参考实现与说明：assignment5</a></li><li><a href="resources/INDEX.md">辅助材料总索引（含另一份参考实现）</a></li></ul>
+<p><a href="lectures/19/notes.md">打开 Markdown 笔记文件</a>（编辑后重新运行 render）</p><pre># 第 19 讲：嘉宾课：Mike Lewis
+
+英文标题：Guest lecture by Mike Lewis · 关联：拓展 · 版本：Spring 2025
+
+## 看完后要能做到
+
+- [ ] 根据实际视频记录主题。
+- [ ] 总结整门课对模型训练的认识。
+- [ ] 决定哪些内容迁移到 Agent 项目。
+
+## 本讲动手任务
+
+写课程复盘：能独立实现什么、还有哪些缺口、下一步项目是什么。
+
+## 所需资料（已整合）
+
+- [官方 2025 课程日程 / 视频入口](https://stanford-cs336.github.io/spring2025/)
+- [官方作业 A5（原始框架与 handout）](../../assignments/05-alignment/README.md)
+- [中文笔记：第五章笔记初版.pdf](../../references/weiruihhh/笔记/第五章笔记初版.pdf)
+- [中文参考实现：chapter5](../../references/weiruihhh/chapter5/)
+- [ShallowU 参考实现与说明：assignment5](../../references/shallowu/assignment5/README.md)
+- [辅助材料总索引（含另一份参考实现）](../../resources/INDEX.md)
+
+中文笔记按知识章节整理，不与视频讲次一一对应；这里给的是相关主题入口。参考实现未经本项目逐项验证，以官方 handout 与测试为准。
+
+## 我的笔记
+
+- 视频链接 / B 站分 P：
+- 用自己的话解释核心概念：
+- 关键公式及每个张量的 shape：
+- 实现文件与测试命令：
+- 卡点、错误原因与解决过程：
+- 下次只做的一件事：
+
+## 课后记录
+
+下面是命令模板，替换用时和收获再运行。只看完视频用 `--watched`；做完上面的动手任务再加 `--practice`；需要同步 GitHub 再加 `--push`。
+
+```powershell
+python study.py record --lecture 19 --minutes 60 --summary &quot;替换为本次收获&quot; --watched
+```
+</pre></details>
+<code>python study.py record --lecture 19 --minutes 60 --summary "本次收获" --watched --push</code></article></section>
+<footer>数据文件 records/sessions.jsonl · 全部初始进度为零 · 不自动上传，只有 --push 或 sync 才会推送。</footer></main>
+<script>document.getElementById('search').addEventListener('input',function(){let q=this.value.trim().toLowerCase();for(let a of document.querySelectorAll('article'))a.hidden=!a.textContent.toLowerCase().includes(q);});</script></body></html>

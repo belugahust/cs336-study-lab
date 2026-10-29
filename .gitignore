@@ -1,0 +1,36 @@
+# Local environments / credentials
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# Generated datasets and training outputs. Official tests/fixtures remain included.
+/data/
+/checkpoints/
+/runs/
+/wandb/
+/logs/
+/assignments/*/data/
+!/assignments/03-scaling/data/
+/assignments/03-scaling/data/*
+!/assignments/03-scaling/data/isoflops_curves.json
+/assignments/*/checkpoints/
+/assignments/*/runs/
+/assignments/*/wandb/
+/assignments/*/outputs/
+/assignments/*/logs/
+/experiments/artifacts/
+*.log
+
+# A5 upstream has no explicit redistribution license.
+/assignments/05-alignment/upstream/
+/assignments/05-alignment/.a5-download-*/

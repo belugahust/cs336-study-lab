@@ -1,0 +1,796 @@
+{
+  "version": "Stanford CS336 Spring 2025",
+  "official_schedule": "https://stanford-cs336.github.io/spring2025/",
+  "timezone": "UTC+08:00",
+  "lectures": [
+    {
+      "id": 1,
+      "title": "概览与分词",
+      "english_title": "Overview, tokenization",
+      "assignment": "A1",
+      "note": "lectures/01/notes.md",
+      "goals": [
+        "解释文本、Unicode 字符与 UTF-8 字节的区别。",
+        "手算一次相邻符号对统计及 BPE 合并。",
+        "按 PDF 编写 BPE 训练和 tokenizer 的第一版。"
+      ],
+      "task": "用 banana、bandana 等短文本写出一轮 BPE 合并；再开始 run_train_bpe 接口。不要先下载大训练集。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_01.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_01.json"
+        },
+        {
+          "label": "官方作业 A1（原始框架与 handout）",
+          "path": "assignments/01-basics/README.md"
+        },
+        {
+          "label": "中文笔记：第一章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第一章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter1",
+          "path": "references/weiruihhh/chapter1/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment1",
+          "path": "references/shallowu/assignment1/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "PyTorch 与资源核算",
+      "english_title": "PyTorch, resource accounting",
+      "assignment": "A1",
+      "note": "lectures/02/notes.md",
+      "goals": [
+        "追踪 batch、sequence、hidden、heads 各个张量维度。",
+        "理解 Parameter、autograd 和矩阵乘法。",
+        "估算小模型参数、梯度及优化器状态占用。"
+      ],
+      "task": "用随机小张量验证矩阵乘法和 reshape；实现 Linear、Embedding，接入官方测试。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_02.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_02.json"
+        },
+        {
+          "label": "官方作业 A1（原始框架与 handout）",
+          "path": "assignments/01-basics/README.md"
+        },
+        {
+          "label": "中文笔记：第一章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第一章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter1",
+          "path": "references/weiruihhh/chapter1/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment1",
+          "path": "references/shallowu/assignment1/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "架构与超参数",
+      "english_title": "Architectures, hyperparameters",
+      "assignment": "A1",
+      "note": "lectures/03/notes.md",
+      "goals": [
+        "理解 RMSNorm、RoPE、SwiGLU 和因果注意力。",
+        "把单个组件拼成 Transformer block 与 LM。",
+        "按 PDF 补优化器、损失、训练循环和采样。"
+      ],
+      "task": "先通过各层测试，再用很小的 batch 验证 loss 能下降；正式训练和消融作为 A1 后续里程碑。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 3.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/e9cb2488fdb53ea37f0e38924ec3a1701925cef3/nonexecutable/2025%20Lecture%203%20-%20architecture.pdf"
+        },
+        {
+          "label": "官方作业 A1（原始框架与 handout）",
+          "path": "assignments/01-basics/README.md"
+        },
+        {
+          "label": "中文笔记：第一章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第一章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter1",
+          "path": "references/weiruihhh/chapter1/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment1",
+          "path": "references/shallowu/assignment1/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "混合专家模型",
+      "english_title": "Mixture of experts",
+      "assignment": "拓展",
+      "note": "lectures/04/notes.md",
+      "goals": [
+        "区分总参数量与每 token 激活参数量。",
+        "理解路由和负载均衡的作用。",
+        "辨认 MoE 与普通 dense Transformer 的区别。"
+      ],
+      "task": "画一个两专家路由示意并解释为何 A1 不需要实现 MoE；优先继续完成 A1。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 4.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/98455ec198c9a88ec1ab2b1c4058662431b54ce3/nonexecutable/2025%20Lecture%204%20-%20MoEs.pdf"
+        },
+        {
+          "label": "官方作业 A1（原始框架与 handout）",
+          "path": "assignments/01-basics/README.md"
+        },
+        {
+          "label": "中文笔记：第一章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第一章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter1",
+          "path": "references/weiruihhh/chapter1/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment1",
+          "path": "references/shallowu/assignment1/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "GPU 基础",
+      "english_title": "GPUs",
+      "assignment": "A2",
+      "note": "lectures/05/notes.md",
+      "goals": [
+        "理解 GPU 内存层次与计算单元。",
+        "区分计算瓶颈与访存瓶颈。",
+        "整理自己可用的实验设备。"
+      ],
+      "task": "先复盘 A1 的正确性与实验；阅读 A2 handout，记录环境需求。无 GPU 时先做理论分析。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 5.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/main/nonexecutable/2025%20Lecture%205%20-%20GPUs.pdf"
+        },
+        {
+          "label": "官方作业 A2（原始框架与 handout）",
+          "path": "assignments/02-systems/README.md"
+        },
+        {
+          "label": "中文笔记：第二章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第二章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter2",
+          "path": "references/weiruihhh/chapter2/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment2",
+          "path": "references/shallowu/assignment2/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Kernel 与 Triton",
+      "english_title": "Kernels, Triton",
+      "assignment": "A2",
+      "note": "lectures/06/notes.md",
+      "goals": [
+        "理解 kernel、分块和融合。",
+        "理解 FlashAttention 减少数据搬运的思路。",
+        "学习如何测量而不是猜测性能。"
+      ],
+      "task": "按 A2 文档完成一个小规模基准；有兼容 GPU 再做 Triton 部分，不在 Windows CPU 环境硬跑。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_06.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_06.json"
+        },
+        {
+          "label": "官方作业 A2（原始框架与 handout）",
+          "path": "assignments/02-systems/README.md"
+        },
+        {
+          "label": "中文笔记：第二章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第二章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter2",
+          "path": "references/weiruihhh/chapter2/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment2",
+          "path": "references/shallowu/assignment2/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "并行训练（一）",
+      "english_title": "Parallelism",
+      "assignment": "A2",
+      "note": "lectures/07/notes.md",
+      "goals": [
+        "理解数据并行的梯度同步。",
+        "分析通信和计算开销。",
+        "梳理 DDP 的正确性要求。"
+      ],
+      "task": "画出一次数据并行更新的时序；按 A2 的 DDP 部分继续实现。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 7.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/4eff81bee0a853217209e163936b264f03572b66/nonexecutable/2025%20Lecture%207%20-%20Parallelism%20basics.pdf"
+        },
+        {
+          "label": "官方作业 A2（原始框架与 handout）",
+          "path": "assignments/02-systems/README.md"
+        },
+        {
+          "label": "中文笔记：第二章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第二章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter2",
+          "path": "references/weiruihhh/chapter2/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment2",
+          "path": "references/shallowu/assignment2/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "并行训练（二）",
+      "english_title": "Parallelism",
+      "assignment": "A2",
+      "note": "lectures/08/notes.md",
+      "goals": [
+        "理解优化器状态与参数分片。",
+        "解释通信与计算重叠。",
+        "对比不同并行方案的内存和吞吐。"
+      ],
+      "task": "记录一个并行方案的权衡；有多 GPU 再运行指定实验，没有设备明确标记未运行。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_08.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_08.json"
+        },
+        {
+          "label": "官方作业 A2（原始框架与 handout）",
+          "path": "assignments/02-systems/README.md"
+        },
+        {
+          "label": "中文笔记：第二章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第二章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter2",
+          "path": "references/weiruihhh/chapter2/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment2",
+          "path": "references/shallowu/assignment2/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "缩放规律（一）",
+      "english_title": "Scaling laws",
+      "assignment": "A3",
+      "note": "lectures/09/notes.md",
+      "goals": [
+        "区分参数量、训练 token 与计算预算。",
+        "理解拟合 scaling law 的前提。",
+        "注意外推误差与实验预算。"
+      ],
+      "task": "阅读 A3 handout，复现小型拟合或先画一组示例曲线，示例数据须明确标注。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 9.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/fb79eb018fa047bf99c4c785dcbbd62fff361e54/nonexecutable/2025%20Lecture%209%20-%20Scaling%20laws%20basics.pdf"
+        },
+        {
+          "label": "官方作业 A3（原始框架与 handout）",
+          "path": "assignments/03-scaling/README.md"
+        },
+        {
+          "label": "中文笔记：第三章.pdf",
+          "path": "references/weiruihhh/笔记/第三章.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter3",
+          "path": "references/weiruihhh/chapter3/"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "推理",
+      "english_title": "Inference",
+      "assignment": "拓展 / A1",
+      "note": "lectures/10/notes.md",
+      "goals": [
+        "理解自回归解码和 KV cache。",
+        "区分预填充与逐 token 解码。",
+        "理解延迟、吞吐与内存之间的权衡。"
+      ],
+      "task": "解释 temperature 和 top-p 对 A1 生成的影响；把推理优化联系到 Agent 的调用成本。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_10.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_10.json"
+        },
+        {
+          "label": "官方作业 A1（原始框架与 handout）",
+          "path": "assignments/01-basics/README.md"
+        },
+        {
+          "label": "中文笔记：第一章完整版v1.pdf",
+          "path": "references/weiruihhh/笔记/第一章完整版v1.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter1",
+          "path": "references/weiruihhh/chapter1/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment1",
+          "path": "references/shallowu/assignment1/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "缩放规律（二）",
+      "english_title": "Scaling laws",
+      "assignment": "A3",
+      "note": "lectures/11/notes.md",
+      "goals": [
+        "理解计算最优训练的含义。",
+        "比较模型更大与数据更多两种选择。",
+        "检查拟合结论的适用范围。"
+      ],
+      "task": "整理 A3 拟合结果和误差；不要把课程历史服务的可用性当作已保证。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 11.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/00191bba00d6d64621dc46ccaed9122681413a24/nonexecutable/2025%20Lecture%2011%20-%20Scaling%20details.pdf"
+        },
+        {
+          "label": "官方作业 A3（原始框架与 handout）",
+          "path": "assignments/03-scaling/README.md"
+        },
+        {
+          "label": "中文笔记：第三章.pdf",
+          "path": "references/weiruihhh/笔记/第三章.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter3",
+          "path": "references/weiruihhh/chapter3/"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "评估",
+      "english_title": "Evaluation",
+      "assignment": "通用 / Agent",
+      "note": "lectures/12/notes.md",
+      "goals": [
+        "区分训练 loss、任务得分与用户体验。",
+        "识别污染、泄漏和基准局限。",
+        "为自己的项目定义可复现评价。"
+      ],
+      "task": "给 Agent 求职项目写 10 条有期望结果的评测任务；只记录真实测得的指标。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_12.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_12.json"
+        },
+        {
+          "label": "官方作业 A3（原始框架与 handout）",
+          "path": "assignments/03-scaling/README.md"
+        },
+        {
+          "label": "中文笔记：第三章.pdf",
+          "path": "references/weiruihhh/笔记/第三章.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter3",
+          "path": "references/weiruihhh/chapter3/"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "数据（一）",
+      "english_title": "Data",
+      "assignment": "A4",
+      "note": "lectures/13/notes.md",
+      "goals": [
+        "理解网页文本提取与数据质量。",
+        "区分规则过滤与模型过滤。",
+        "认识隐私、许可和数据污染问题。"
+      ],
+      "task": "在少量公开样本上验证提取/过滤流程，再按 A4 要求扩展。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_13.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_13.json"
+        },
+        {
+          "label": "官方作业 A4（原始框架与 handout）",
+          "path": "assignments/04-data/README.md"
+        },
+        {
+          "label": "中文笔记：第四章v1草稿.pdf",
+          "path": "references/weiruihhh/笔记/第四章v1草稿.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter4",
+          "path": "references/weiruihhh/chapter4/"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "数据（二）",
+      "english_title": "Data",
+      "assignment": "A4",
+      "note": "lectures/14/notes.md",
+      "goals": [
+        "理解精确去重与近似去重。",
+        "了解质量和多样性的平衡。",
+        "为数据处理保留可复现配置。"
+      ],
+      "task": "比较去重前后样本数与例子，记录阈值及数据来源。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_14.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_14.json"
+        },
+        {
+          "label": "官方作业 A4（原始框架与 handout）",
+          "path": "assignments/04-data/README.md"
+        },
+        {
+          "label": "中文笔记：第四章v1草稿.pdf",
+          "path": "references/weiruihhh/笔记/第四章v1草稿.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter4",
+          "path": "references/weiruihhh/chapter4/"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "title": "对齐：SFT / RLHF",
+      "english_title": "Alignment - SFT/RLHF",
+      "assignment": "A5",
+      "note": "lectures/15/notes.md",
+      "goals": [
+        "区分预训练和监督微调。",
+        "理解偏好数据与奖励模型的角色。",
+        "理解对齐收益与局限。"
+      ],
+      "task": "阅读 A5 handout，梳理 SFT 数据和 loss mask；实际训练前确认模型、显存和依赖。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 15.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/61eddac004df975466cff0329b615f2d24230069/nonexecutable/2025%20Lecture%2015%20-%20RLHF%20Alignment.pdf"
+        },
+        {
+          "label": "官方作业 A5（原始框架与 handout）",
+          "path": "assignments/05-alignment/README.md"
+        },
+        {
+          "label": "中文笔记：第五章笔记初版.pdf",
+          "path": "references/weiruihhh/笔记/第五章笔记初版.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter5",
+          "path": "references/weiruihhh/chapter5/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment5",
+          "path": "references/shallowu/assignment5/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "对齐：强化学习（一）",
+      "english_title": "Alignment - RL",
+      "assignment": "A5",
+      "note": "lectures/16/notes.md",
+      "goals": [
+        "理解策略、奖励和采样。",
+        "区分监督信号与强化学习反馈。",
+        "认识推理任务里的可验证奖励。"
+      ],
+      "task": "手算一个小批次奖励归一化例子，再按 A5 接口实现；不把调 API 当作 RL 训练。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture 16.pdf",
+          "path": "https://github.com/stanford-cs336/spring2025-lectures/blob/e94e33f433985e57036b25215dff2a4292e67a4f/nonexecutable/2025%20Lecture%2016%20-%20RLVR.pdf"
+        },
+        {
+          "label": "官方作业 A5（原始框架与 handout）",
+          "path": "assignments/05-alignment/README.md"
+        },
+        {
+          "label": "中文笔记：第五章笔记初版.pdf",
+          "path": "references/weiruihhh/笔记/第五章笔记初版.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter5",
+          "path": "references/weiruihhh/chapter5/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment5",
+          "path": "references/shallowu/assignment5/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "title": "对齐：强化学习（二）",
+      "english_title": "Alignment - RL",
+      "assignment": "A5",
+      "note": "lectures/17/notes.md",
+      "goals": [
+        "理解 GRPO 及其训练循环。",
+        "观察奖励、KL 和长度等指标。",
+        "分析评测收益与奖励投机。"
+      ],
+      "task": "把 A5 实验配置、seed 和指标记入 experiment；安全对齐补充作业作为选做。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方材料：lecture_17.py",
+          "path": "https://stanford-cs336.github.io/spring2025-lectures/?trace=var/traces/lecture_17.json"
+        },
+        {
+          "label": "官方作业 A5（原始框架与 handout）",
+          "path": "assignments/05-alignment/README.md"
+        },
+        {
+          "label": "中文笔记：第五章笔记初版.pdf",
+          "path": "references/weiruihhh/笔记/第五章笔记初版.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter5",
+          "path": "references/weiruihhh/chapter5/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment5",
+          "path": "references/shallowu/assignment5/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "嘉宾课：Junyang Lin",
+      "english_title": "Guest Lecture by Junyang Lin",
+      "assignment": "拓展",
+      "note": "lectures/18/notes.md",
+      "goals": [
+        "根据实际视频记录主题。",
+        "区分研究结论、经验判断和产品展示。",
+        "选一个对自己研究有价值的问题。"
+      ],
+      "task": "写三条收获和一个待验证判断；此处不预先假定嘉宾讲了哪些具体内容。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方作业 A5（原始框架与 handout）",
+          "path": "assignments/05-alignment/README.md"
+        },
+        {
+          "label": "中文笔记：第五章笔记初版.pdf",
+          "path": "references/weiruihhh/笔记/第五章笔记初版.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter5",
+          "path": "references/weiruihhh/chapter5/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment5",
+          "path": "references/shallowu/assignment5/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "嘉宾课：Mike Lewis",
+      "english_title": "Guest lecture by Mike Lewis",
+      "assignment": "拓展",
+      "note": "lectures/19/notes.md",
+      "goals": [
+        "根据实际视频记录主题。",
+        "总结整门课对模型训练的认识。",
+        "决定哪些内容迁移到 Agent 项目。"
+      ],
+      "task": "写课程复盘：能独立实现什么、还有哪些缺口、下一步项目是什么。",
+      "resources": [
+        {
+          "label": "官方 2025 课程日程 / 视频入口",
+          "path": "https://stanford-cs336.github.io/spring2025/"
+        },
+        {
+          "label": "官方作业 A5（原始框架与 handout）",
+          "path": "assignments/05-alignment/README.md"
+        },
+        {
+          "label": "中文笔记：第五章笔记初版.pdf",
+          "path": "references/weiruihhh/笔记/第五章笔记初版.pdf"
+        },
+        {
+          "label": "中文参考实现：chapter5",
+          "path": "references/weiruihhh/chapter5/"
+        },
+        {
+          "label": "ShallowU 参考实现与说明：assignment5",
+          "path": "references/shallowu/assignment5/README.md"
+        },
+        {
+          "label": "辅助材料总索引（含另一份参考实现）",
+          "path": "resources/INDEX.md"
+        }
+      ]
+    }
+  ]
+}
