@@ -1,5 +1,7 @@
 # 第 01 讲：概览与分词
 
+第一次做作业先看 [新手指南](../../assignments/01-basics/BEGINNER_START_HERE.md)，从打开 VS Code 和运行字节练习开始。
+
 英文标题：Overview, tokenization · 关联：A1 · 版本：Spring 2025
 
 ## 看完后要能做到

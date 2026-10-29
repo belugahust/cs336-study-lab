@@ -1,0 +1,10 @@
+{
+  "folders": [{"path": "."}],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder}/assignments/01-basics/.venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": false
+  },
+  "extensions": {
+    "recommendations": ["ms-python.python", "ms-python.vscode-pylance"]
+  }
+}

@@ -4,6 +4,8 @@
 
 ## 从这里开始
 
+**第一次写课程作业？先看 [作业一新手指南](assignments/01-basics/BEGINNER_START_HERE.md)**：从 VS Code 打开文件夹、配置环境，到在哪个文件写 BPE、怎么接官方测试，每一步都有说明。可双击 `cs336-study.code-workspace` 打开项目。
+
 1. 安装 Python 3.10+ 和 Git。记录工具仅用 Python 标准库，无需安装依赖。
 2. 打开本仓库文件夹的终端，运行 `python study.py status`。
 3. 打开 [第 01 讲笔记](lectures/01/notes.md)，按“看完后要能做到 → 动手任务 → 所需资料”学习。
