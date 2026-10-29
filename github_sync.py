@@ -4,6 +4,7 @@ No external packages. Credentials come from GITHUB_TOKEN/GH_TOKEN or Git's
 credential helper and are never printed or stored in this repository.
 """
 import base64
+import concurrent.futures
 from datetime import datetime, timezone
 import json
 import os
@@ -11,6 +12,7 @@ from pathlib import Path
 import re
 import ssl
 import subprocess
+import threading
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -58,6 +60,8 @@ class GitHub:
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), urllib.request.HTTPSHandler(context=context))
         try:
             with opener.open(request, timeout=90) as response:
+                if method == 'HEAD':
+                    return {}
                 return json.load(response)
         except urllib.error.HTTPError as exc:
             if allow_404 and exc.code == 404:
@@ -94,6 +98,35 @@ def sync_api(root, branch):
             raise ValueError('远端包含本地尚未合并的提交；请先 fetch / pull 处理后再同步，不会覆盖远端。')
     commits = run(root, 'rev-list', '--reverse', (remote + '..HEAD') if remote else 'HEAD').splitlines()
     remote_blobs = set()
+    cache_path = Path(run(root, 'rev-parse', '--git-path', 'cs336-api-blobs.json'))
+    if not cache_path.is_absolute():
+        cache_path = root / cache_path
+    cache = set()
+    if cache_path.exists():
+        try:
+            saved = json.loads(cache_path.read_text(encoding='utf-8'))
+            if saved.get('repo') == api.repo:
+                cache = set(saved['blobs'])
+        except (ValueError, KeyError):
+            pass
+    cache_lock = threading.Lock()
+
+    def upload_blob(sha):
+        if sha not in cache:
+            # Also recovers uploads from an interrupted first publication.
+            exists = api.repo_request('HEAD', '/git/blobs/' + sha, allow_404=True)
+            if exists is None:
+                data = run(root, 'cat-file', 'blob', sha, binary=True)
+                print(f'API 上传二进制对象：{sha[:8]} ({len(data) / 1048576:.1f} MiB)', flush=True)
+                obj = api.repo_request('POST', '/git/blobs', {'content': base64.b64encode(data).decode('ascii'), 'encoding': 'base64'})
+                if obj['sha'] != sha:
+                    raise ValueError('上传对象校验失败，停止同步。')
+            with cache_lock:
+                cache.add(sha)
+                temp = cache_path.with_suffix('.tmp')
+                temp.write_text(json.dumps({'repo': api.repo, 'blobs': sorted(cache)}), encoding='utf-8')
+                temp.replace(cache_path)
+        return sha
     if remote:
         tree = api.repo_request('GET', '/git/trees/' + remote + '?recursive=1')
         if tree.get('truncated'):
@@ -107,6 +140,7 @@ def sync_api(root, branch):
             raise ValueError('此提交使用非 UTC 的 Git 时间戳；为保留原提交哈希，请使用普通 Git 推送。工作台自动提交使用 UTC。')
         entries = []
         inline = set()
+        pending_blobs = set()
         for entry in run(root, 'ls-tree', '-rz', commit, binary=True).split(b'\0'):
             if not entry:
                 continue
@@ -127,11 +161,12 @@ def sync_api(root, branch):
                     item['content'] = text
                     inline.add(sha)
                 except UnicodeError:
-                    obj = api.repo_request('POST', '/git/blobs', {'content': base64.b64encode(data).decode('ascii'), 'encoding': 'base64'})
-                    if obj['sha'] != sha:
-                        raise ValueError('上传对象校验失败，停止同步。')
-                    remote_blobs.add(sha)
+                    pending_blobs.add(sha)
             entries.append(item)
+        print(f'API 同步：{len(entries)} 个文件，核对 {len(pending_blobs)} 个二进制对象。', flush=True)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+            for sha in pool.map(upload_blob, sorted(pending_blobs)):
+                remote_blobs.add(sha)
         tree = api.repo_request('POST', '/git/trees', {'tree': entries})
         expected_tree = run(root, 'rev-parse', commit + '^{tree}')
         if tree['sha'] != expected_tree:
